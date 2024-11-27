@@ -10,7 +10,7 @@ public class MainApplication extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/stalleneindhoven2/view/map-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Stallen Eindhoven Map");
+        stage.setTitle("Stallen Eindhoven Mapppp");
         stage.setScene(scene);
         stage.show();
     }
