@@ -1,25 +1,32 @@
 package com.example.stalleneindhoven2.model;
 
 public class Fietsenstalling {
-    private String name;
-    private double latitude;
+    private String naam;
     private double longitude;
+    private double latitude;
 
-    public Fietsenstalling(String name, double latitude, double longitude) {
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    // Getters and setters
+    public String getNaam() {
+        return naam;
     }
 
-    public String getName() {
-        return name;
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public double getLatitude() {
         return latitude;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }
