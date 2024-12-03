@@ -44,9 +44,10 @@ public class MapController {
             List<Fietsenstalling> fietsenstallingen = DataParser.parseData(jsonData);
 
             for (Fietsenstalling fietsenstalling : fietsenstallingen) {
-                String script = String.format("addPin(%f, %f, '%s');", fietsenstalling.getLongitude(), fietsenstalling.getLatitude(), fietsenstalling.getNaam());
+                String script = String.format("addPin('%f' , '%f', '%s');", fietsenstalling.getLongitude(), fietsenstalling.getLatitude(), fietsenstalling.getNaam());
                 webEngine.executeScript(script);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

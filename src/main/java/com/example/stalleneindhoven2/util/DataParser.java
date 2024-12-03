@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +21,13 @@ public class DataParser {
 
             for (Object resultObj : results) {
                 JSONObject result = (JSONObject) resultObj;
-                JSONObject fields = (JSONObject) result.get("fields");
+//                JSONObject fields = (JSONObject) result.get("fields");
 
-                if (fields != null) {
+                if (result != null) {
                     Fietsenstalling fietsenstalling = new Fietsenstalling();
-                    fietsenstalling.setNaam((String) fields.get("naam_fietsenstalling"));
-                    fietsenstalling.setLongitude((Double) fields.get("longitude"));
-                    fietsenstalling.setLatitude((Double) fields.get("latitude"));
+                    fietsenstalling.setNaam((String) result.get("naam_fietsenstalling"));
+                    fietsenstalling.setLongitude((Double) result.get("longitude"));
+                    fietsenstalling.setLatitude((Double) result.get("latitude"));
 
                     fietsenstallingen.add(fietsenstalling);
                 }
