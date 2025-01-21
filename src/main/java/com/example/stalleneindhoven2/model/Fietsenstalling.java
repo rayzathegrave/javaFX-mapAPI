@@ -1,9 +1,7 @@
 package com.example.stalleneindhoven2.model;
 
-public class Fietsenstalling {
+public class Fietsenstalling extends Locatie {
     private String naam;
-    private double longitude;
-    private double latitude;
 
     // Getters and setters
     public String getNaam() {
@@ -14,19 +12,12 @@ public class Fietsenstalling {
         this.naam = naam;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public Fietsenstalling() {
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    // Constructor
+    public Fietsenstalling(String naam, double longitude, double latitude) {
+        super(longitude, latitude); // Call the superclass constructor
+        this.naam = naam;
     }
 }

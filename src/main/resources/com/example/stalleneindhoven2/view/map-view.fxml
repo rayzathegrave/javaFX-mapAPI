@@ -9,5 +9,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.stalleneindhoven2.controller.MapController">
-    <WebView fx:id="mapWebView" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+    <Button text="Load Map" onAction="#loadmap"/>
+    <WebView fx:id="mapWebView" AnchorPane.topAnchor="80.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
 </AnchorPane>
