@@ -1,8 +1,10 @@
 package com.example.stalleneindhoven2.controller;
 
+import com.example.stalleneindhoven2.util.DBCPDataSource;
 import com.example.stalleneindhoven2.view.ReserveringView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 
 public class ReserveringController {
@@ -31,16 +33,29 @@ public class ReserveringController {
         String typeReservering = view.getTypeReserveringDropdown().getValue();
 
         if (naam.isEmpty() || geboortedatum == null || locatie == null || typeReservering == null) {
-            System.out.println("Vul alstublieft alle velden in.");
+            showAlert("Fout", "Vul alstublieft alle velden in.");
             return;
         }
 
-        System.out.println("Invoer ontvangen:");
-        System.out.println("Naam: " + naam);
-        System.out.println("Geboortedatum: " + geboortedatum);
-        System.out.println("Locatie: " + locatie);
-        System.out.println("Type Reservering: " + typeReservering);
+        try {
+            // Save data to the database
+            DBCPDataSource.saveData(
+                    naam,
+                    geboortedatum.toString(),
+                    locatie,
+                    typeReservering
+            );
+            showAlert("Succes", "De reservering is opgeslagen.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Fout", "Er is een fout opgetreden bij het opslaan van de reservering.");
+        }
+    }
 
-        // Hier kan je de data opslaan in een database of andere verwerking uitvoeren
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
