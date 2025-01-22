@@ -1,5 +1,7 @@
 package com.example.stalleneindhoven2;
 
+import com.example.stalleneindhoven2.controller.ReserveringController;
+import com.example.stalleneindhoven2.view.ReserveringView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,11 +10,15 @@ import javafx.stage.Stage;
 public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/stalleneindhoven2/view/map-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Stallen Eindhoven Map");
-        stage.setScene(scene);
-        stage.show();
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/stalleneindhoven2/view/map-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Stallen Eindhoven Map");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
