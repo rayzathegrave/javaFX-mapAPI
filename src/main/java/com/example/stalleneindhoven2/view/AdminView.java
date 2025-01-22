@@ -1,74 +1,41 @@
 package com.example.stalleneindhoven2.view;
 
+import com.example.stalleneindhoven2.model.Reservering;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
-public class AdminView extends GridPane {
+public class AdminView extends VBox {
 
-    private TextField naamVeld;
-    private DatePicker geboortedatumPicker;
-    private ComboBox<String> locatieDropdown;
-    private ComboBox<String> typeReserveringDropdown;
-    private Button updateButton;
-    private Button deleteButton;
+    private final TableView<Reservering> tableView;
+    private final Button updateButton;
+    private final Button deleteButton;
 
     public AdminView() {
-        this.setHgap(10);
-        this.setVgap(10);
-        this.setPadding(new javafx.geometry.Insets(10));
+        tableView = new TableView<>();
 
-        // Naam veld
-        Label naamLabel = new Label("Naam:");
-        naamVeld = new TextField();
+        TableColumn<Reservering, String> naamColumn = new TableColumn<>("Naam");
+        naamColumn.setCellValueFactory(cellData -> cellData.getValue().naamProperty());
 
-        // Geboortedatum picker
-        Label geboortedatumLabel = new Label("Geboortedatum:");
-        geboortedatumPicker = new DatePicker();
+        TableColumn<Reservering, String> geboortedatumColumn = new TableColumn<>("Geboortedatum");
+        geboortedatumColumn.setCellValueFactory(cellData -> cellData.getValue().geboortedatumProperty());
 
-        // Locatie dropdown
-        Label locatieLabel = new Label("Locatie:");
-        locatieDropdown = new ComboBox<>();
-        locatieDropdown.getItems().addAll(
-                "Amsterdam", "Rotterdam", "Utrecht", "Den Haag",
-                "Eindhoven", "Maastricht", "Groningen", "Leeuwarden"
-        );
+        TableColumn<Reservering, String> locatieColumn = new TableColumn<>("Locatie");
+        locatieColumn.setCellValueFactory(cellData -> cellData.getValue().locatieProperty());
 
-        // Type reservering dropdown
-        Label typeReserveringLabel = new Label("Type Reservering:");
-        typeReserveringDropdown = new ComboBox<>();
-        typeReserveringDropdown.getItems().addAll("Privé", "Zakelijk", "Groepsreservering");
+        TableColumn<Reservering, String> typeReserveringColumn = new TableColumn<>("Type Reservering");
+        typeReserveringColumn.setCellValueFactory(cellData -> cellData.getValue().typeReserveringProperty());
 
-        // Update and Delete buttons
+        tableView.getColumns().addAll(naamColumn, geboortedatumColumn, locatieColumn, typeReserveringColumn);
+
         updateButton = new Button("Update");
         deleteButton = new Button("Delete");
 
-        // Add components to the GridPane
-        this.add(naamLabel, 0, 0);
-        this.add(naamVeld, 1, 0);
-        this.add(geboortedatumLabel, 0, 1);
-        this.add(geboortedatumPicker, 1, 1);
-        this.add(locatieLabel, 0, 2);
-        this.add(locatieDropdown, 1, 2);
-        this.add(typeReserveringLabel, 0, 3);
-        this.add(typeReserveringDropdown, 1, 3);
-        this.add(updateButton, 0, 4);
-        this.add(deleteButton, 1, 4);
+        this.getChildren().addAll(tableView, updateButton, deleteButton);
     }
 
-    public TextField getNaamVeld() {
-        return naamVeld;
-    }
-
-    public DatePicker getGeboortedatumPicker() {
-        return geboortedatumPicker;
-    }
-
-    public ComboBox<String> getLocatieDropdown() {
-        return locatieDropdown;
-    }
-
-    public ComboBox<String> getTypeReserveringDropdown() {
-        return typeReserveringDropdown;
+    public TableView<Reservering> getTableView() {
+        return tableView;
     }
 
     public Button getUpdateButton() {
@@ -77,5 +44,9 @@ public class AdminView extends GridPane {
 
     public Button getDeleteButton() {
         return deleteButton;
+    }
+
+    public void setTableData(ObservableList<Reservering> data) {
+        tableView.setItems(data);
     }
 }
