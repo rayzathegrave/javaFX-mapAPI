@@ -2,6 +2,7 @@ package com.example.stalleneindhoven2.controller;
 
 import com.example.stalleneindhoven2.model.EbikeStalling;
 import com.example.stalleneindhoven2.model.Fietsenstalling;
+import com.example.stalleneindhoven2.model.ScooterBerging;
 import com.example.stalleneindhoven2.util.DBCPDataSource;
 import com.example.stalleneindhoven2.util.DataFetcher;
 import com.example.stalleneindhoven2.util.DataParser;
@@ -45,30 +46,39 @@ public class MapController {
         fetchDataAndDisplay();
     }
 
-  private void fetchDataAndDisplay() {
-    try {
-        // Fetch data from the API
-        String jsonData = DataFetcher.fetchData("https://data.eindhoven.nl/api/explore/v2.1/catalog/datasets/fietsenstallingen/records?");
-        List<Fietsenstalling> fietsenstallingen = DataParser.parseData(jsonData);
 
-        // Fetch ebikestallingen from the database
-        List<EbikeStalling> ebikestallingen = DBCPDataSource.fetchEbikestallingen();
+    private void fetchDataAndDisplay() {
+        try {
+            // Fetch data from the API
+            String jsonData = DataFetcher.fetchData("https://data.eindhoven.nl/api/explore/v2.1/catalog/datasets/fietsenstallingen/records?");
+            List<Fietsenstalling> fietsenstallingen = DataParser.parseData(jsonData);
 
-        // Convert EbikeStalling to Fietsenstalling and add to the list
-        for (EbikeStalling ebikeStalling : ebikestallingen) {
-            fietsenstallingen.add(new Fietsenstalling(ebikeStalling.getStallingNaam(), ebikeStalling.getLongitude(), ebikeStalling.getLatitude()));
+            // Fetch ebikestallingen from the database
+            List<EbikeStalling> ebikestallingen = DBCPDataSource.fetchEbikestallingen();
+
+            // Convert EbikeStalling to Fietsenstalling and add to the list
+            for (EbikeStalling ebikeStalling : ebikestallingen) {
+                fietsenstallingen.add(new Fietsenstalling(ebikeStalling.getStallingNaam(), ebikeStalling.getLongitude(), ebikeStalling.getLatitude()));
+            }
+
+            // Fetch scooterbergings from the database
+            List<ScooterBerging> scooterBergingen = DBCPDataSource.fetchScooterBergingen();
+
+            // Convert ScooterBerging to Fietsenstalling and add to the list
+            for (ScooterBerging scooterBerging : scooterBergingen) {
+                fietsenstallingen.add(new Fietsenstalling(scooterBerging.getBergingNaam(), scooterBerging.getLongitude(), scooterBerging.getLatitude()));
+            }
+
+            // Display all stalling data on the map
+            for (Fietsenstalling fietsenstalling : fietsenstallingen) {
+                String script = String.format("addPin('%s', '%s', '%s');", fietsenstalling.getLongitude(), fietsenstalling.getLatitude(), fietsenstalling.getNaam());
+                webEngine.executeScript(script);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // Display all stalling data on the map
-        for (Fietsenstalling fietsenstalling : fietsenstallingen) {
-            String script = String.format("addPin('%s', '%s', '%s');", fietsenstalling.getLongitude(), fietsenstalling.getLatitude(), fietsenstalling.getNaam ());
-            webEngine.executeScript(script);
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-}
 }
 
 

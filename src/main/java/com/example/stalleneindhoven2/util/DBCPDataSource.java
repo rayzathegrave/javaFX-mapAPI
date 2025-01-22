@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.stalleneindhoven2.model.EbikeStalling;
+import com.example.stalleneindhoven2.model.ScooterBerging;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 public class DBCPDataSource {
@@ -52,6 +53,28 @@ public class DBCPDataSource {
 
     return ebikestallingen;
 }
+
+    public static List<ScooterBerging> fetchScooterBergingen() throws Exception {
+        List<ScooterBerging> scooterBergingen = new ArrayList<>();
+        String sql = "SELECT bergingnaam, longitude, latitude FROM ScooterBerging"; // Ensure this matches your DB setup
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String bergingNaam = rs.getString("bergingNaam");
+                double longitude = rs.getDouble("longitude");
+                double latitude = rs.getDouble("latitude");
+
+                scooterBergingen.add(new ScooterBerging(bergingNaam, longitude, latitude));
+            }
+        } catch (Exception e) {
+            throw new Exception("Error fetching scooterbergings: " + e.getMessage());
+        }
+
+        return scooterBergingen;
+    }
 
     public static void insertRegistratie(String naam, java.time.LocalDate geboortedatum) throws Exception {
         String sqlNaam = "INSERT INTO Naam (naam) VALUES (?)";

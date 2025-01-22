@@ -4,20 +4,22 @@ public class ScooterBerging extends Locatie {
     private String bergingNaam;
 
     // Getters and setters
-    public String getStallingNaam() {
+    public String getBergingNaam() {
         return bergingNaam;
     }
 
-    public void setStallingNaam(String stallingNaam) {
-        this.bergingNaam = stallingNaam;
+    public void setBergingNaam(String bergingNaam) {
+        this.bergingNaam = bergingNaam; // Consistent naming
     }
 
+    // Default constructor
     public ScooterBerging() {
     }
 
-    // Constructor
-    public ScooterBerging(String stallingNaam, double longitude, double latitude) {
+    // Constructor initializing bergingNaam, longitude, and latitude
+    public ScooterBerging(String bergingNaam, double longitude, double latitude) {
         super(longitude, latitude); // Call the superclass constructor
-        this.bergingNaam = stallingNaam;
+        this.bergingNaam = bergingNaam;
     }
 }
+
