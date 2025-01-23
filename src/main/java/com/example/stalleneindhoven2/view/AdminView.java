@@ -1,5 +1,6 @@
 package com.example.stalleneindhoven2.view;
 
+import com.example.stalleneindhoven2.controller.ReserveringController;
 import com.example.stalleneindhoven2.model.Reservering;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -16,8 +17,10 @@ public class AdminView extends VBox {
     private final TableView<Reservering> tableView;
     private final Button updateButton;
     private final Button deleteButton;
+    private ReserveringController controller;
 
-    public AdminView() {
+    public AdminView(ReserveringController controller) {
+        this.controller = controller;
         tableView = new TableView<>();
         tableView.setEditable(true); // Make the table view editable
 
@@ -80,11 +83,9 @@ public class AdminView extends VBox {
 
         // Set up event handler for the "Update" button
         updateButton.setOnAction(event -> {
-            // Get the selected reservation
             Reservering selectedReservering = tableView.getSelectionModel().getSelectedItem();
             if (selectedReservering != null) {
-                // Call the update logic in the controller (assuming it's set elsewhere)
-                handleUpdate(selectedReservering);
+                controller.handleUpdate(selectedReservering);
             } else {
                 showAlert("Fout", "Selecteer een reservering om bij te werken.");
             }
@@ -92,11 +93,9 @@ public class AdminView extends VBox {
 
         // Set up event handler for the "Delete" button
         deleteButton.setOnAction(event -> {
-            // Get the selected reservation
             Reservering selectedReservering = tableView.getSelectionModel().getSelectedItem();
             if (selectedReservering != null) {
-                // Call the delete logic in the controller (assuming it's set elsewhere)
-                handleDelete(selectedReservering);
+                controller.handleDelete(selectedReservering);
             } else {
                 showAlert("Fout", "Selecteer een reservering om te verwijderen.");
             }
@@ -117,19 +116,6 @@ public class AdminView extends VBox {
 
     public void setTableData(ObservableList<Reservering> data) {
         tableView.setItems(data);
-    }
-
-    private void handleUpdate(Reservering reservering) {
-        // Call the update logic in the controller (assuming it's set elsewhere)
-        // Ensure that handleUpdate() is defined in the controller
-        // You can add your update code here if needed
-        showAlert("Update", "Reservering is updated: " + reservering.getNaam());
-    }
-
-    private void handleDelete(Reservering reservering) {
-        // Call the delete logic in the controller (assuming it's set elsewhere)
-        // You can add your delete code here if needed
-        showAlert("Delete", "Reservering is deleted: " + reservering.getNaam());
     }
 
     private void showAlert(String title, String message) {

@@ -13,10 +13,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
 
 public class ReserveringController {
 
@@ -43,13 +41,25 @@ public class ReserveringController {
 
     private void initializeAdmin() {
         if (adminView != null) {
-            adminView.getUpdateButton().setOnAction(e -> handleUpdate());
-            adminView.getDeleteButton().setOnAction(e -> handleDelete());
+            adminView.getUpdateButton().setOnAction(e -> {
+                Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
+                if (selectedReservering != null) {
+                    handleUpdate(selectedReservering);
+                } else {
+                    showAlert("Fout", "Selecteer een reservering om bij te werken.");
+                }
+            });
+            adminView.getDeleteButton().setOnAction(e -> {
+                Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
+                if (selectedReservering != null) {
+                    handleDelete(selectedReservering);
+                } else {
+                    showAlert("Fout", "Selecteer een reservering om te verwijderen.");
+                }
+            });
             loadTableData();
         }
     }
-
-
 
     private void loadTableData() {
         if (adminView == null) {
@@ -86,20 +96,33 @@ public class ReserveringController {
     }
 
     private void showAdminView(Stage stage) {
-        AdminView adminView = new AdminView();
+        AdminView adminView = new AdminView(this); // Pass the controller to the AdminView
         this.adminView = adminView; // Ensure the controller uses this AdminView instance
         Scene scene = new Scene(adminView);
         stage.setScene(scene);
         stage.show();
 
         // Add button handlers
-        adminView.getUpdateButton().setOnAction(e -> handleUpdate());
-        adminView.getDeleteButton().setOnAction(e -> handleDelete());
+        adminView.getUpdateButton().setOnAction(e -> {
+            Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
+            if (selectedReservering != null) {
+                handleUpdate(selectedReservering);
+            } else {
+                showAlert("Fout", "Selecteer een reservering om bij te werken.");
+            }
+        });
+        adminView.getDeleteButton().setOnAction(e -> {
+            Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
+            if (selectedReservering != null) {
+                handleDelete(selectedReservering);
+            } else {
+                showAlert("Fout", "Selecteer een reservering om te verwijderen.");
+            }
+        });
 
         // Load data into the table
         loadTableData();
     }
-
 
     private void handleSubmit() {
         String naam = view.getNaamVeld().getText();
@@ -185,88 +208,130 @@ public class ReserveringController {
         }
     }
 
-
-    private void handleUpdate() {
+    public void handleUpdate(Reservering selectedReservering) {
         if (adminView == null) {
             showAlert("Fout", "Admin view is not initialized.");
             return;
         }
 
-        Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
-        if (selectedReservering == null) {
-            showAlert("Fout", "Selecteer een reservering om bij te werken.");
-            return;
-        }
+        Connection connection = null;
+        try {
+            connection = DBCPDataSource.getConnection();
+            connection.setAutoCommit(false); // Start transaction
 
-        try (Connection connection = DBCPDataSource.getConnection()) {
-            // Update the foreign key tables if needed
-
-            // Update 'Reserverder' table (naam_reserveerder)
-            String updateReserverderQuery = "UPDATE Reserverder SET naam_reserveerder = ? WHERE naam_reserveerder = ?";
-            try (PreparedStatement updateReserverderStmt = connection.prepareStatement(updateReserverderQuery)) {
-                updateReserverderStmt.setString(1, selectedReservering.getNaam());  // Set the new naam_reserveerder
-                updateReserverderStmt.setString(2, selectedReservering.getNaam());  // Old naam_reserveerder
-                updateReserverderStmt.executeUpdate();
+            // Step 1: Ensure 'naam_reserveerder' exists in 'Reserverder' table
+            String checkNaamQuery = "SELECT COUNT(*) FROM Reserverder WHERE naam_reserveerder = ?";
+            try (PreparedStatement checkStmt = connection.prepareStatement(checkNaamQuery)) {
+                checkStmt.setString(1, selectedReservering.getNaam());
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) == 0) {
+                        // Insert if 'naam_reserveerder' does not exist
+                        String insertReserverderQuery = "INSERT INTO Reserverder (naam_reserveerder) VALUES (?)";
+                        try (PreparedStatement insertStmt = connection.prepareStatement(insertReserverderQuery)) {
+                            insertStmt.setString(1, selectedReservering.getNaam());
+                            insertStmt.executeUpdate();
+                        }
+                    }
+                }
             }
 
-            // Update 'Geboortedatum_reserveerder' table (geboortedatum_reserveerder)
-            String updateGeboortedatumQuery = "UPDATE Geboortedatum_reserveerder SET geboortedatum = ? WHERE geboortedatum = ?";
-            try (PreparedStatement updateGeboortedatumStmt = connection.prepareStatement(updateGeboortedatumQuery)) {
-                updateGeboortedatumStmt.setDate(1, java.sql.Date.valueOf(selectedReservering.getGeboortedatum()));
-                updateGeboortedatumStmt.setDate(2, java.sql.Date.valueOf(selectedReservering.getGeboortedatum()));
-                updateGeboortedatumStmt.executeUpdate();
+            // Step 2: Ensure 'geboortedatum_reserveerder' exists in 'Geboortedatum_reserveerder' table
+            String checkGeboortedatumQuery = "SELECT COUNT(*) FROM Geboortedatum_reserveerder WHERE geboortedatum = ?";
+            try (PreparedStatement checkStmt = connection.prepareStatement(checkGeboortedatumQuery)) {
+                checkStmt.setDate(1, java.sql.Date.valueOf(selectedReservering.getGeboortedatum()));
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) == 0) {
+                        // Insert if 'geboortedatum_reserveerder' does not exist
+                        String insertGeboortedatumQuery = "INSERT INTO Geboortedatum_reserveerder (geboortedatum) VALUES (?)";
+                        try (PreparedStatement insertStmt = connection.prepareStatement(insertGeboortedatumQuery)) {
+                            insertStmt.setDate(1, java.sql.Date.valueOf(selectedReservering.getGeboortedatum()));
+                            insertStmt.executeUpdate();
+                        }
+                    }
+                }
             }
 
-            // Update 'TypeReservering' table (type_reservering)
-            String updateTypeReserveringQuery = "UPDATE TypeReservering SET type_reservering = ? WHERE type_reservering = ?";
-            try (PreparedStatement updateTypeReserveringStmt = connection.prepareStatement(updateTypeReserveringQuery)) {
-                updateTypeReserveringStmt.setString(1, selectedReservering.getTypeReservering());
-                updateTypeReserveringStmt.setString(2, selectedReservering.getTypeReservering());
-                updateTypeReserveringStmt.executeUpdate();
+            // Step 3: Ensure 'type_reservering' exists in 'TypeReservering' table
+            String checkTypeReserveringQuery = "SELECT COUNT(*) FROM TypeReservering WHERE type_reservering = ?";
+            try (PreparedStatement checkStmt = connection.prepareStatement(checkTypeReserveringQuery)) {
+                checkStmt.setString(1, selectedReservering.getTypeReservering());
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) == 0) {
+                        // Insert if 'type_reservering' does not exist
+                        String insertTypeReserveringQuery = "INSERT INTO TypeReservering (type_reservering) VALUES (?)";
+                        try (PreparedStatement insertStmt = connection.prepareStatement(insertTypeReserveringQuery)) {
+                            insertStmt.setString(1, selectedReservering.getTypeReservering());
+                            insertStmt.executeUpdate();
+                        }
+                    }
+                }
             }
 
-            // Update 'Locatie' table (locatie)
-            String updateLocatieQuery = "UPDATE Locatie SET locatie = ? WHERE locatie = ?";
-            try (PreparedStatement updateLocatieStmt = connection.prepareStatement(updateLocatieQuery)) {
-                updateLocatieStmt.setString(1, selectedReservering.getLocatie());
-                updateLocatieStmt.setString(2, selectedReservering.getLocatie());
-                updateLocatieStmt.executeUpdate();
+            // Step 4: Ensure 'locatie' exists in 'Locatie' table
+            String checkLocatieQuery = "SELECT COUNT(*) FROM Locatie WHERE locatie = ?";
+            try (PreparedStatement checkStmt = connection.prepareStatement(checkLocatieQuery)) {
+                checkStmt.setString(1, selectedReservering.getLocatie());
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) == 0) {
+                        // Insert if 'locatie' does not exist
+                        String insertLocatieQuery = "INSERT INTO Locatie (locatie) VALUES (?)";
+                        try (PreparedStatement insertStmt = connection.prepareStatement(insertLocatieQuery)) {
+                            insertStmt.setString(1, selectedReservering.getLocatie());
+                            insertStmt.executeUpdate();
+                        }
+                    }
+                }
             }
 
-            // Now, update the 'Reservering' table
-            String updateReserveringQuery = "UPDATE Reservering SET geboortedatum_reserveerder = ?, locatie = ?, type_reservering = ? " +
-                    "WHERE naam_reserveerder = ? AND geboortedatum_reserveerder = ? AND type_reservering = ? AND locatie = ?";
+            // Step 5: Update the 'Reservering' table
+            String updateReserveringQuery = "UPDATE Reservering SET naam_reserveerder = ?, geboortedatum_reserveerder = ?, locatie = ?, type_reservering = ? " +
+                    "WHERE naam_reserveerder = ? AND geboortedatum_reserveerder = ? AND locatie = ? AND type_reservering = ?";
             try (PreparedStatement updateReserveringStmt = connection.prepareStatement(updateReserveringQuery)) {
-                updateReserveringStmt.setDate(1, java.sql.Date.valueOf(selectedReservering.getGeboortedatum()));
-                updateReserveringStmt.setString(2, selectedReservering.getLocatie());
-                updateReserveringStmt.setString(3, selectedReservering.getTypeReservering());
-                updateReserveringStmt.setString(4, selectedReservering.getNaam());
-                updateReserveringStmt.setDate(5, java.sql.Date.valueOf(selectedReservering.getGeboortedatum()));
-                updateReserveringStmt.setString(6, selectedReservering.getTypeReservering());
-                updateReserveringStmt.setString(7, selectedReservering.getLocatie());
+                updateReserveringStmt.setString(1, selectedReservering.getNaam());
+                updateReserveringStmt.setDate(2, java.sql.Date.valueOf(selectedReservering.getGeboortedatum()));
+                updateReserveringStmt.setString(3, selectedReservering.getLocatie());
+                updateReserveringStmt.setString(4, selectedReservering.getTypeReservering());
+                updateReserveringStmt.setString(5, selectedReservering.getOriginalNaam());
+                updateReserveringStmt.setDate(6, java.sql.Date.valueOf(selectedReservering.getOriginalGeboortedatum()));
+                updateReserveringStmt.setString(7, selectedReservering.getOriginalLocatie());
+                updateReserveringStmt.setString(8, selectedReservering.getOriginalTypeReservering());
                 updateReserveringStmt.executeUpdate();
             }
+
+            // Commit the transaction
+            connection.commit();
 
             showAlert("Succes", "De reservering is bijgewerkt.");
             loadTableData();  // Reload the data after the update
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+            if (connection != null) {
+                try {
+                    connection.rollback();  // Rollback if there's an error
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
             showAlert("Fout", "Er is een fout opgetreden bij het bijwerken van de reservering.");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException closeEx) {
+                    closeEx.printStackTrace();
+                }
+            }
         }
     }
 
-    private void handleDelete() {
+
+
+    public void handleDelete(Reservering selectedReservering) {
         if (adminView == null) {
             showAlert("Fout", "Admin view is not initialized.");
             return;
         }
-        Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
-        if (selectedReservering == null) {
-            showAlert("Fout", "Selecteer een reservering om te verwijderen.");
-            return;
-        }
-
         try (Connection connection = DBCPDataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "DELETE FROM Reservering WHERE naam_reserveerder = ? AND geboortedatum_reserveerder = ? AND type_reservering = ? AND locatie = ?")) {
@@ -283,8 +348,6 @@ public class ReserveringController {
         }
     }
 
-
-
     public void showAdminLogin(Stage stage) {
         AdminLoginView adminLoginView = new AdminLoginView();
         Scene scene = new Scene(adminLoginView);
@@ -300,7 +363,6 @@ public class ReserveringController {
             }
         });
     }
-
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
