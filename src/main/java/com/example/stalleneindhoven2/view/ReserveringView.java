@@ -32,14 +32,27 @@ public class ReserveringView extends GridPane {
         Label locatieLabel = new Label("Locatie:");
         locatieDropdown = new ComboBox<>();
         locatieDropdown.getItems().addAll(
-                "Amsterdam", "Rotterdam", "Utrecht", "Den Haag",
-                "Eindhoven", "Maastricht", "Groningen", "Leeuwarden"
+                "Fietsenstalling Heuvel", "Fietsenstalling 18 Septemberplein", "Fietsenstalling NS-station zuidzijde", "Pop-up fietsenstalling Mercado",
+                "Fietsenstalling Winkelcentrum", "Fietsenstalling NS-station", "blaytstalling", "sukaberging"
         );
 
         // Type reservering dropdown
         Label typeReserveringLabel = new Label("Type Reservering:");
         typeReserveringDropdown = new ComboBox<>();
-        typeReserveringDropdown.getItems().addAll("Privé", "Zakelijk", "Groepsreservering");
+        typeReserveringDropdown.getItems().addAll("Normaal", "Oplaadplek", "Paddelacplek");
+
+        // listener
+        locatieDropdown.setOnAction(event -> {
+            String selectedLocatie = locatieDropdown.getValue();
+            typeReserveringDropdown.getItems().clear();
+            if ("sukaberging".equals(selectedLocatie)) {
+                typeReserveringDropdown.getItems().addAll("Normaal", "Paddelacplek");
+            } else if ("blaytstalling".equals(selectedLocatie)) {
+                typeReserveringDropdown.getItems().addAll("Normaal", "Oplaadplek");
+            } else {
+                typeReserveringDropdown.getItems().addAll("Normaal", "Oplaadplek", "Paddelacplek");
+            }
+        });
 
         // Submit button
         submitButton = new Button("Opslaan");

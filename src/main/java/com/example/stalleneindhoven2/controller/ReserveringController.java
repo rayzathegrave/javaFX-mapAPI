@@ -251,37 +251,37 @@ public class ReserveringController {
                 }
             }
 
-            // Step 3: Ensure 'type_reservering' exists in 'TypeReservering' table
-            String checkTypeReserveringQuery = "SELECT COUNT(*) FROM TypeReservering WHERE type_reservering = ?";
-            try (PreparedStatement checkStmt = connection.prepareStatement(checkTypeReserveringQuery)) {
-                checkStmt.setString(1, selectedReservering.getTypeReservering());
-                try (ResultSet rs = checkStmt.executeQuery()) {
-                    if (rs.next() && rs.getInt(1) == 0) {
-                        // Insert if 'type_reservering' does not exist
-                        String insertTypeReserveringQuery = "INSERT INTO TypeReservering (type_reservering) VALUES (?)";
-                        try (PreparedStatement insertStmt = connection.prepareStatement(insertTypeReserveringQuery)) {
-                            insertStmt.setString(1, selectedReservering.getTypeReservering());
-                            insertStmt.executeUpdate();
-                        }
-                    }
-                }
-            }
-
-            // Step 4: Ensure 'locatie' exists in 'Locatie' table
-            String checkLocatieQuery = "SELECT COUNT(*) FROM Locatie WHERE locatie = ?";
-            try (PreparedStatement checkStmt = connection.prepareStatement(checkLocatieQuery)) {
-                checkStmt.setString(1, selectedReservering.getLocatie());
-                try (ResultSet rs = checkStmt.executeQuery()) {
-                    if (rs.next() && rs.getInt(1) == 0) {
-                        // Insert if 'locatie' does not exist
-                        String insertLocatieQuery = "INSERT INTO Locatie (locatie) VALUES (?)";
-                        try (PreparedStatement insertStmt = connection.prepareStatement(insertLocatieQuery)) {
-                            insertStmt.setString(1, selectedReservering.getLocatie());
-                            insertStmt.executeUpdate();
-                        }
-                    }
-                }
-            }
+            // Step 3: deze alleen aanzetten als locatie enm type ook aangepast mogen worden
+//            String checkTypeReserveringQuery = "SELECT COUNT(*) FROM TypeReservering WHERE type_reservering = ?";
+//            try (PreparedStatement checkStmt = connection.prepareStatement(checkTypeReserveringQuery)) {
+//                checkStmt.setString(1, selectedReservering.getTypeReservering());
+//                try (ResultSet rs = checkStmt.executeQuery()) {
+//                    if (rs.next() && rs.getInt(1) == 0) {
+//                        // Insert if 'type_reservering' does not exist
+//                        String insertTypeReserveringQuery = "INSERT INTO TypeReservering (type_reservering) VALUES (?)";
+//                        try (PreparedStatement insertStmt = connection.prepareStatement(insertTypeReserveringQuery)) {
+//                            insertStmt.setString(1, selectedReservering.getTypeReservering());
+//                            insertStmt.executeUpdate();
+//                        }
+//                    }
+//                }
+//            }
+//
+//            // Step 4: Ensure 'locatie' exists in 'Locatie' table
+//            String checkLocatieQuery = "SELECT COUNT(*) FROM Locatie WHERE locatie = ?";
+//            try (PreparedStatement checkStmt = connection.prepareStatement(checkLocatieQuery)) {
+//                checkStmt.setString(1, selectedReservering.getLocatie());
+//                try (ResultSet rs = checkStmt.executeQuery()) {
+//                    if (rs.next() && rs.getInt(1) == 0) {
+//                        // Insert if 'locatie' does not exist
+//                        String insertLocatieQuery = "INSERT INTO Locatie (locatie) VALUES (?)";
+//                        try (PreparedStatement insertStmt = connection.prepareStatement(insertLocatieQuery)) {
+//                            insertStmt.setString(1, selectedReservering.getLocatie());
+//                            insertStmt.executeUpdate();
+//                        }
+//                    }
+//                }
+//            }
 
             // Step 5: Update the 'Reservering' table
             String updateReserveringQuery = "UPDATE Reservering SET naam_reserveerder = ?, geboortedatum_reserveerder = ?, locatie = ?, type_reservering = ? " +
