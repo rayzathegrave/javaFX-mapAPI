@@ -1,9 +1,12 @@
 package com.example.stalleneindhoven2.util;
 
+import com.example.stalleneindhoven2.model.EbikeStalling;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 
 public class DataFetcher {
     public static String fetchData(String endpoint) throws Exception {
@@ -24,3 +27,4 @@ public class DataFetcher {
         return content.toString();
     }
 }
+

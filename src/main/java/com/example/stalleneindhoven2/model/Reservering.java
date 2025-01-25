@@ -43,10 +43,6 @@ public class Reservering {
         this.naam.set(naam);
     }
 
-    public ObjectProperty<LocalDate> geboortedatumProperty() {
-        return geboortedatum;
-    }
-
     public LocalDate getGeboortedatum() {
         return geboortedatum.get();
     }

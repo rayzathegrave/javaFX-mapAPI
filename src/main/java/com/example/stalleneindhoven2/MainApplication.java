@@ -1,7 +1,6 @@
 package com.example.stalleneindhoven2;
 
-import com.example.stalleneindhoven2.controller.ReserveringController;
-import com.example.stalleneindhoven2.view.ReserveringView;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

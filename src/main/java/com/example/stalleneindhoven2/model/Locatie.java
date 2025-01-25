@@ -5,7 +5,7 @@ public class Locatie {
     private double longitude;
     private double latitude;
 
-    // Constructor initializing only longitude and latitude
+    // Constructor voor longitude and latitude
     public Locatie(double longitude, double latitude) {
         this.longitude = longitude;
         this.latitude = latitude;

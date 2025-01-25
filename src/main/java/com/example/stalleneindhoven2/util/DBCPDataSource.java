@@ -76,39 +76,6 @@ public class DBCPDataSource {
         return scooterBergingen;
     }
 
-    public static void insertRegistratie(String naam, java.time.LocalDate geboortedatum) throws Exception {
-        String sqlNaam = "INSERT INTO Naam (naam) VALUES (?)";
-        String sqlGeboortedatum = "INSERT INTO Geboortedatum (geboortedatum) VALUES (?)";
-        String sqlRegistratie = "INSERT INTO Registratie (naam, geboortedatum) VALUES (?, ?)";
 
-        try (Connection conn = getConnection()) {
-            conn.setAutoCommit(false); // Start transaction
-
-            try (PreparedStatement stmtNaam = conn.prepareStatement(sqlNaam);
-                 PreparedStatement stmtGeboortedatum = conn.prepareStatement(sqlGeboortedatum);
-                 PreparedStatement stmtRegistratie = conn.prepareStatement(sqlRegistratie)) {
-
-                // Insert into naam table
-                stmtNaam.setString(1, naam);
-                stmtNaam.executeUpdate();
-
-                // Insert into geboortedatum table
-                stmtGeboortedatum.setDate(1, java.sql.Date.valueOf(geboortedatum));
-                stmtGeboortedatum.executeUpdate();
-
-                // Insert into registratie table
-                stmtRegistratie.setString(1, naam);
-                stmtRegistratie.setDate(2, java.sql.Date.valueOf(geboortedatum));
-                stmtRegistratie.executeUpdate();
-
-                conn.commit(); // Commit transaction
-            } catch (SQLException e) {
-                conn.rollback(); // Rollback transaction on error
-                throw new Exception("Error inserting registratie: " + e.getMessage());
-            }
-        } catch (SQLException e) {
-            throw new Exception("Error connecting to database: " + e.getMessage());
-        }
-    }
 
 }

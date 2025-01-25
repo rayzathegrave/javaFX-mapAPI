@@ -15,7 +15,7 @@ public class AdminLoginView extends GridPane {
         this.setVgap(10);
         this.setPadding(new javafx.geometry.Insets(10));
 
-        // Admin code field
+        // Admin code label and field
         Label adminCodeLabel = new Label("Admin Code:");
         adminCodeField = new PasswordField();
 

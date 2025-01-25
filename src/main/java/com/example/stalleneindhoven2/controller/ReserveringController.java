@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.sql.*;
-import java.time.LocalDate;
 
 public class ReserveringController {
 
@@ -28,38 +27,13 @@ public class ReserveringController {
         initialize();
     }
 
-    public ReserveringController(AdminView adminView) {
-        this.view = null;
-        this.adminView = adminView;
-        initializeAdmin();
-    }
 
     private void initialize() {
         Button submitButton = view.getSubmitButton();
         submitButton.setOnAction(event -> handleSubmit());
     }
 
-    private void initializeAdmin() {
-        if (adminView != null) {
-            adminView.getUpdateButton().setOnAction(e -> {
-                Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
-                if (selectedReservering != null) {
-                    handleUpdate(selectedReservering);
-                } else {
-                    showAlert("Fout", "Selecteer een reservering om bij te werken.");
-                }
-            });
-            adminView.getDeleteButton().setOnAction(e -> {
-                Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
-                if (selectedReservering != null) {
-                    handleDelete(selectedReservering);
-                } else {
-                    showAlert("Fout", "Selecteer een reservering om te verwijderen.");
-                }
-            });
-            loadTableData();
-        }
-    }
+
 
     private void loadTableData() {
         if (adminView == null) {
@@ -96,13 +70,13 @@ public class ReserveringController {
     }
 
     private void showAdminView(Stage stage) {
-        AdminView adminView = new AdminView(this); // Pass the controller to the AdminView
-        this.adminView = adminView; // Ensure the controller uses this AdminView instance
+        AdminView adminView = new AdminView(this); // overgeven van de controller naar de AdminView
+        this.adminView = adminView; // zorgt dat controller deze adminview gebruikt
         Scene scene = new Scene(adminView);
         stage.setScene(scene);
         stage.show();
 
-        // Add button handlers
+        // button handlers
         adminView.getUpdateButton().setOnAction(e -> {
             Reservering selectedReservering = adminView.getTableView().getSelectionModel().getSelectedItem();
             if (selectedReservering != null) {

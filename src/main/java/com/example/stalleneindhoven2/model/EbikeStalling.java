@@ -9,16 +9,10 @@ public class EbikeStalling extends Locatie {
         this.stallingNaam = stallingNaam;
     }
 
-    // Default constructor
-    public EbikeStalling() {
-    }
 
     // Getters and setters
     public String getStallingNaam() {
         return stallingNaam;
     }
 
-    public void setStallingNaam(String stallingNaam) {
-        this.stallingNaam = stallingNaam;
-    }
 }

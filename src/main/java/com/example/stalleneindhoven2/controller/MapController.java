@@ -33,7 +33,6 @@ public class MapController {
         URL url = getClass().getResource("/com/example/stalleneindhoven2/view/map.html");
         if (url != null) {
             webEngine.load(url.toExternalForm());
-           // System.out.println("Loading URL: " + url.toExternalForm());
         } else {
             System.err.println("Resource not found");
         }

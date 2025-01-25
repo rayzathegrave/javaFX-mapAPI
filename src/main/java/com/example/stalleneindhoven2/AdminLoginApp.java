@@ -1,10 +1,8 @@
 package com.example.stalleneindhoven2;
 
 import com.example.stalleneindhoven2.controller.ReserveringController;
-import com.example.stalleneindhoven2.view.AdminLoginView;
 import com.example.stalleneindhoven2.view.ReserveringView;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class AdminLoginApp extends Application {
