@@ -20,4 +20,9 @@ public class Fietsenstalling extends Locatie {
         super(longitude, latitude); // Call the superclass constructor
         this.naam = naam;
     }
+
+    @Override
+    public String getDescription() {
+        return "Fietsenstalling: " + naam;
+    }
 }

@@ -9,10 +9,13 @@ public class EbikeStalling extends Locatie {
         this.stallingNaam = stallingNaam;
     }
 
-
     // Getters and setters
     public String getStallingNaam() {
         return stallingNaam;
     }
 
+    @Override
+    public String getDescription() {
+        return "EbikeStalling: " + stallingNaam;
+    }
 }

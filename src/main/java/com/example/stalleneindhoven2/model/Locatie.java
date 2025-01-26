@@ -1,11 +1,11 @@
 package com.example.stalleneindhoven2.model;
 
-public class Locatie {
+public abstract class Locatie {
 
     private double longitude;
     private double latitude;
 
-    // Constructor voor longitude and latitude
+    // Constructor for longitude and latitude
     public Locatie(double longitude, double latitude) {
         this.longitude = longitude;
         this.latitude = latitude;
@@ -31,4 +31,7 @@ public class Locatie {
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
+
+    // Abstract method to be implemented by subclasses
+    public abstract String getDescription();
 }
