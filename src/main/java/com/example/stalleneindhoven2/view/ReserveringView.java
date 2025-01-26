@@ -21,7 +21,7 @@ public class ReserveringView extends GridPane {
         this.setPadding(new javafx.geometry.Insets(10));
 
         // Naam veld
-        Label naamLabel = new Label("Naam:");
+        Label naamLabel = new Label("Volledige naam:");
         naamVeld = new TextField();
 
         // Geboortedatum picker

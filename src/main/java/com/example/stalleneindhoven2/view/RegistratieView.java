@@ -16,7 +16,7 @@ public class RegistratieView extends GridPane {
         this.setPadding(new javafx.geometry.Insets(10));
 
         // Maak de UI-componenten
-        Label naamLabel = new Label("Naam:");
+        Label naamLabel = new Label("Volledige naam:");
         naamVeld = new TextField();
 
         Label geboortedatumLabel = new Label("Geboortedatum:");
